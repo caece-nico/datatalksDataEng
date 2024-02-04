@@ -6,9 +6,15 @@
 4. [Cargar datos en Postgres](#4.-cargar-datos-en-postgres)
 5. [Bajar un archivo usando Shell](#5.-bajar-un-archivo-usando-shell)
 6. [Primer ETL usando PANDAS](#6.-primer-etl-usando-pandas)
+7. [Ingesting data into Docker](#7.-ingesting-data-into-docker)
 
-    [Otros](#problemas-de-memoria)
-    [Creacion de un entorno virtual](#creacion-y-activacion-de-un-entorno-virtual)
+7.  [Otros](#problemas-de-memoria)
+    * [Creacion de un entorno virtual](#creacion-y-activacion-de-un-entorno-virtual)
+    * [Instalar PgAdmin y Red en Docker](#instalar-pgadmin-y-red-en-docker)
+    * [Redes con Docker-Compose](#redes-con-docker-compose)
+
+8. [Ejecucion del proyecto desde localhost](#8.-ejecucion-del-proyecto-desde-localhost)
+
 
 ## 1. Refresh rapido
 
@@ -160,6 +166,9 @@ En este primer Ejemplo vamos a cargar una tabla en postgres usnado el archivo de
 
 [ver notebook](Week-1\quersPostgresJupyter.ipynb)
 
+
+## 7. Ingesting data inot Docker.
+
 ## Problemas de memoria.
 
 ```
@@ -182,3 +191,122 @@ python -m venv mi_entorno_virtual
 . /mi_entorno_virtual/scripts/activate #desde git
 code .
 ```
+
+## Instalar PgAdmin y Red en Docker
+
+1. Para instalar un contenedor con PgAdmin vamos a usar una imagen ya existente en el repo de Docker.
+
+__dpage/pgadmin4__
+
++ Descargamos la imagen
+
+```
+docker pull dpage/pgadmin4
+```
+
++ Una vez creada la imagen, inciamos el contenedor.
+
+```
+docker run -t -e PGADMIN_DEFAULT_EMAIL="admin@admin.com" -e PGADMIN_DEFAULT_PASSWORD="root" -p 8080:80 dpage/pgadmin4
+```
+
+Una vez iniciado el _contenedor_ podemos entrar a 
+
+__localhost:8080_ pero no podremos crear una conexión con postgres porque al poner _localhost_ en pgadmin busca dentro del container cuando en realidad deberiamos buscar la _ip del container de postgres_ para conectar__
+
+### Creación de una RED entre contenedores.
+
+[Tutorial de creacion de networks en docker](https://docs.docker.com/engine/reference/commandline/network_create/)
+
+1. creamos una red
+
+```
+docker network create pg-network
+```
+
+2. Ejecutamos el primer contenedor especificando la red
+
++ postgres
+
+_Especificar __network__ y __name___
+
+```
+docker run -t -e POSTGRES_USER="root" -e POSTGRES_PASSWORD="root"  -e POSTGRES_DB="ny_taxi" -v D:/Proyectos/datatalksDataEng/Week-1/ny_postgres_postgres_data:/var/lib/postgresql/data -p 5432:5432 --network=pg-network --name=pg-database postgres:13
+```
+
++ pgadmin
+
+_Especificar __network__ y __name___
+
+
+```
+docker run -t -e PGADMIN_DEFAULT_EMAIL="admin@admin.com" -e PGADMIN_DEFAULT_PASSWORD="root" -p 8080:80 --network pg-network --name=pdadmin dpage/pgadmin4
+```
+
+Ahora podemos crear una conexion usando el nombre de la conexón de postgres __pg-database__
+
+**UN MEJOR ENFOQUE ES USAR DOCKER COMPOSE**
+
+
+## Redes con Docker-Compose
+
+```
+Igual que el ejemplo anterior pero suando Docker-Compose.
+```
+
+## 8. Ejecucion del proyecto desde localhost
+
+```
+Para probar que el script de python funciona lo vamos a probar desde nuestro -venv local antes de subirlo a docker.
+```
+
+Para esto debemos tener levantados los contenedores de postgres y pgadmin en red
+LUego en otro terminar ejecutar:
+
+```cmd
+URL="https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/yellow_tripdata_2021-01.csv.gz"
+
+
+python ingest_data.py \
+--user=root \
+--password=root \
+--host=localhost \
+--port=5432 \
+--db=ny_taxi \
+--table_name=yellow_taxi_ny \
+--url=${URL} \
+--csv_name=yellow_tripdata_2021-01.csv
+```
+
+Para esta prueba tenemos el archivo .csv.gz local porque desde la terminal no funciona __wget__
+pero cuando lo pasamos descomentamos esa linea.
+
+
+## Para Ejecutar en Docker.
+
+1. COnstruimos la imagen
+
+```
+docker build -t taxi_ingest:v001 .
+```
+
+2. Ejecutamos con todos los comandos.
+
+```
+docker run -t 
+```
+
+URL="https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/yellow_tripdata_2021-01.csv.gz"
+
+
+docker run -t --network=pg-network taxi_ingest:v001 \
+--user=root \
+--password=root \
+--host=pg-database \
+--port=5432 \
+--db=ny_taxi \
+--table_name=yellow_taxi_ny \
+--url=${URL} \
+--csv_name=yellow_tripdata_2021-01.csv
+
+**IMPORTANTE** El contenedor de python debe estar en la misma red.
