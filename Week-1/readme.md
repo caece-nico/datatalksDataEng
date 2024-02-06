@@ -217,6 +217,7 @@ __localhost:8080_ pero no podremos crear una conexión con postgres porque al po
 ### Creación de una RED entre contenedores.
 
 [Tutorial de creacion de networks en docker](https://docs.docker.com/engine/reference/commandline/network_create/)
+[Video de DataTalks de creacion de networks](https://www.youtube.com/watch?v=tOr4hTsHOzU&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb)
 
 1. creamos una red
 
