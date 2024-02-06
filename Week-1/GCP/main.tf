@@ -1,27 +1,27 @@
 terraform {
-    required_providers {
-      google = {
-        source = "hashicorp/google"
-        version = "5.6.0"
-      }
+  required_providers {
+    google = {
+      source  = "hashicorp/google"
+      version = "5.6.0"
     }
-    
-}
+  }
 
+}
 provider "google" {
-    # Configuration options el archivo no lo publicamos
-    credentials = file("archivo.....")
-    project = "proyectoDataTalk"
-    region = "us-central1"
+  # Configuration options el archivo no lo publicamos
+  credentials = file("projectonleali-24b8e9f5079a.json")
+  project     = var.project
+  region      = "us-central1"
 
 }
+
 
 resource "google_storage_bucket" "auto-expire" {
-  name          = "proyectoaatatalk-mi_primer_bucket"
-  location      = "US"
+  name          = var.gcs_bucket_name
+  location      = var.location
   force_destroy = true
 
-  
+
 
   lifecycle_rule {
     condition {
@@ -33,5 +33,8 @@ resource "google_storage_bucket" "auto-expire" {
   }
 }
 
+resource "google_bigquery_dataset" "demo_dataset" {
+  dataset_id = var.bq_dataset_name
+  location = var.location
 
-
+}

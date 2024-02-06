@@ -159,7 +159,7 @@ google_storage_bucket.auto-expire: Creation complete after 2s [id=proyectoaatata
 Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
 ```
 
-__IMPORTANTE__ tuvimos que ejecutar el archivo con un nuevo usuario con permisos de owner.
+__IMPORTANTE__ tuvimos que ejecutar el archivo con un nuevo usuario con permisos de edit.
 
 ### Destruimos el todo lo que creamos.
 
@@ -174,4 +174,22 @@ google_storage_bucket.auto-expire: Destroying... [id=proyectoaatatalk-mi_primer_
 google_storage_bucket.auto-expire: Destruction complete after 3s
 
 Destroy complete! Resources: 1 destroyed.
+```
+
+### Creacion de un Dataset  - BigQuery
+
+```
+resource "google_bigquery_dataset" "demo_dataset" {
+  dataset_id = "demo_dataset"
+}
+```
+
+En este ejemplo creamos n _bucket_ y un _biqquery_
+
+```
+google_bigquery_dataset.demo_dataset: Creating...
+google_storage_bucket.auto-expire: Creating...
+google_bigquery_dataset.demo_dataset: Creation complete after 2s [id=projects/projectonleali/datasets/demo_dataset]
+google_storage_bucket.auto-expire: Creation complete after 2s [id=proyectoaatatalk-mi_primer_bucket]
+
 ```
