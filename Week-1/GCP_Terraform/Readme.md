@@ -42,7 +42,7 @@ Antes de crear el archivo _terraform_ es necesarios crear una _cuenta de servici
 _service account_ es una cuenta para software, pero que no vamos a usar como usuarios finales. Sirve para crear buckets u otros recursos.
 
 
-![pantalla de usaurio](Week-1\GCP_Terraform\img\terraform-cuenta-de-servicio.png)
+![pantalla de usaurio](/Week-1/GCP_Terraform/img/terraform-cuenta-de-servicio.png)
 
 + Big Data
 + Storage Database
