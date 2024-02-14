@@ -1,5 +1,7 @@
 */ny_postgres_postgres_data
 */mi_entorno_week1
 */yellow_tripdata_2021-01.csv
-*/volumen_postgres
+*/DockerComposeRefactoring/volumen_postgres
+*/DockerComposeRefactoring/ny_postgres_postgres_data
 Week-1/GCP/projectonleali-649724cf41f9.json
+*/EjemploIngestaData/yellow_tripdata_2021-01.csv
