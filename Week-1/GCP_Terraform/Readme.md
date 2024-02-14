@@ -8,13 +8,7 @@
     - [plan](#.-plan)
     - [apply](#.-apply)
     - [destroy](#.-destroy)
-4. [Creación del entorno GCP](#4.-creacion-del-entorno-gcp)
-    - [Creacion de VM](#.-creacion-de-vm)
-    - [Instalacion de Anaconda](#.-instalacion-de-anaconda)
-    - [Instalacion de Docker](#.-instalacon-de-docker)
-    - [Instalar gcloud y gsutil](#.-gcloud-y-gsutil)
-    - [Crear una sesión con permisos gcloud](#.-gcloud-y-gsutil)
-    
+
 
 
 ## 1. Introduccion a terraform
