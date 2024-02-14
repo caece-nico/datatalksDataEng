@@ -9,10 +9,9 @@ terraform {
 }
 provider "google" {
   # Configuration options el archivo no lo publicamos
-  credentials = file("projectonleali-24b8e9f5079a.json")
+  credentials = file("projectonleali-649724cf41f9.json")
   project     = var.project
   region      = "us-central1"
-
 }
 
 
