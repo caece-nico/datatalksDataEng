@@ -44,49 +44,28 @@ _service account_ es una cuenta para software, pero que no vamos a usar como usu
 
 ![pantalla de usaurio](/Week-1/GCP_Terraform/img/terraform-cuenta-de-servicio.png)
 
+Le otorgamos permisos de edit sobre
+
 + Big Data
 + Storage Database
++ Compute Engine
+
+```
+Si necesitamos agregar un permiso no lo hacemos desde la pantalla de service account, lo hacemos desde IAM y editamos el usuario de servicio.
+```
 
 ## Tipos de cuenta en GCP
 
 1. Service acount -> es un tipo de cuenta que solo deberia ser acedida por software
 2. User Account -> es una cuenta para usuarios con privilegios.
 
-¿Cómo crear una cuenta de servicio?
-
-|Pasos|descripcion|
-|-----|-----------|
-|IAM and admin| service account -> create services acoount|
-|Otorgar permisos| GCP Bucket - storage admin|
-|BigQuery|Admin|
-|COmpute Engine|Admin|
 
 __Generamos la clave como JSON y la guadardamos en un lugar seguro__
 
 
-## Terraform 
+# 3. Crear script Terraform
 
-Se usa para crear infraestructura en la nube.
-
-+ Infraestructura como código.
-
-```
-Util para eliminar los recursos que creamos y no necesitamos mas (No ser cargados con los pagos de los mismos).
-```
-
-1. No está hecho para deployar software.
-2. No está pensado para manejar recrusos que no están especificados en el _terraform file_
-
-¿ Qué es Terraform?
-
-Es infraestructura como código.
-
-
-- providers -> Es el código que permite a terraform comunicarse y manejar recursos con:
-
-1. AWS
-2. AZURE
-3. GCP
+Una vez creada la cuenta de servicio y descargada la clave _json_ podemos crear el archivo _.tf_ con las especificaciones de nuestra infraestructura.
 
 
 ## Comandos claves
@@ -99,26 +78,38 @@ Es infraestructura como código.
 |destroy|Remove everything defined in the tf files|
 
 
-
 ## Creacion de un archivo Terraform para Google Provider
 
 Buscamos en google un modelo de __provider de terraform para google y le empezamos a añadir servicios__
 
 
-```terraform
+
+```python
+
+terraform {
+  required_providers {
+    google = {
+      source  = "hashicorp/google"
+      version = "5.6.0"
+    }
+  }
+
 provider "google" {
-    # Configuration options
-        } 
+  credentials = file("misCredenciales.json")
+  project     = var.project
+  region      = "us-central1"
+}
 ```
 
+Desde la consola un comando que nos puede ayudar a que todo se vea mejor es :
 
-Desde la consola un comando que nos puede ayudar a que todo se vea mejor es 
-
+```
 terraform fmt
+```
 
 debemos estar en la carpeta del main.tf
 
-## Ejecucion de terraform
+## Ejecución de terraform
 
 1. Primero debemos instalarlo. Es un archivo ejecutable, lo descargamos en una carpeta y creamos una variabe de sistema.
 2. En este ejemplo no está funcionando desde gitbash asique lo hacemos desde __cmd__ situados en el directorio del main.tf
@@ -127,7 +118,9 @@ debemos estar en la carpeta del main.tf
 tarraform init
 ```
 
+Despues de ejecutar este comando crea los archivos neecsarios de terraform, no borrarlos.
 
+__Este comando baja los providers necesarios__
 
 ```
 Initializing the backend...
@@ -153,12 +146,12 @@ rerun this command to reinitialize your working directory. If you forget, other
 commands will detect it and remind you to do so if necessary.
 ```
 
-### Creacion de un BUcket en GCP
+### Creacion de un Bucket en GCP
 
 - para saber como crear un Bucket lo buscamos en Intener (Google)
-- El nombre de un bucket debe ser único, podemos unier el nombre del proyecto + Bucket.
+- El nombre de un bucket debe ser único, podemos unir  el nombre del proyecto + Bucket.
 
-```json
+```python
 resource "google_storage_bucket" "auto-expire" {
   name          = "auto-expiring-bucket"
   location      = "US"
@@ -188,7 +181,13 @@ Se ejecuta desde la consola sobre el directorio que está el __main.tr__
 terraform plan
 ```
 
+![Output de terraform plan](/Week-1/GCP_Terraform/img/terraform-plan.png)
+
+Muestra lo que va a hacer el proceso que creamos. Es un _blueprint_
+
 ### Ejecutamos terraform
+
+Este comando materializa la infraestructura definida en el código.
 
 ```
 terraform apply
@@ -202,6 +201,8 @@ Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
 ```
 
 __IMPORTANTE__ tuvimos que ejecutar el archivo con un nuevo usuario con permisos de edit.
+
+![output terraform apply](./img/terraform-apply.png)
 
 ### Destruimos el todo lo que creamos.
 
@@ -220,13 +221,13 @@ Destroy complete! Resources: 1 destroyed.
 
 ### Creacion de un Dataset  - BigQuery
 
-```
+```python
 resource "google_bigquery_dataset" "demo_dataset" {
   dataset_id = "demo_dataset"
 }
 ```
 
-En este ejemplo creamos n _bucket_ y un _biqquery_
+En este ejemplo creamos n _bucket_ y un _bigquery_
 
 ```
 google_bigquery_dataset.demo_dataset: Creating...
@@ -235,3 +236,39 @@ google_bigquery_dataset.demo_dataset: Creation complete after 2s [id=projects/pr
 google_storage_bucket.auto-expire: Creation complete after 2s [id=proyectoaatatalk-mi_primer_bucket]
 
 ```
+
+
+## 4. Crear sesion en GCLOUD
+
+```
+Si necesitamos usar algunos de los recursos creados desde nuestra PC local, necesitamos crear una sesion de cuenta de servicios para que pueda acceder al bucker y subir algpun archivo.
+```
+
+Para esto usar _GCLOUD_ para crear la sesión y _GSUTIL_ para acceder a los recursos.
+
+__IMPORTANTE__ Para acceder a estos recursos vamos a usar las credenciales qeu corresponden a la _sesion de servicios_ el mismo .json usado para dar de alta los recursos de _terraform_
+
+### Copiamos sin los permisos necesarios.
+
+![Error sin permisos](./img/gsutil-copy-error.png)
+
+En este ejemplo vemos que si no damos antes la autorizacion sobre _usuario de servicios_ no podemos copiar.
+
+```shell
+gsutil cp ./img/*.png gs://projectonleali-mibucket
+```
+
+### Otorgamos los permisos necesarios.
+
+![Permisos](./img/gcloud-credenciales.png)
+
+Una vez otorgados los permisos los mismos son activados.
+
+```shell
+gcloud auth activate-service-account --key-file ./mis_claves/projectonleali-649724cf41f9.json
+```
+Activated service account credentials for: [terraformapp@projectonleali.iam.gserviceaccount.com]
+
+### Volvemos a copiar con los permisos necesarios.
+
+![Copia con permisos](./img/gsutil-ok.png)

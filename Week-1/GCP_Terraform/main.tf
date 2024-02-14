@@ -9,7 +9,7 @@ terraform {
 }
 provider "google" {
   # Configuration options el archivo no lo publicamos
-  credentials = file("projectonleali-649724cf41f9.json")
+  credentials = file("./mis_claves/projectonleali-649724cf41f9.json")
   project     = var.project
   region      = "us-central1"
 }
@@ -34,6 +34,6 @@ resource "google_storage_bucket" "auto-expire" {
 
 resource "google_bigquery_dataset" "demo_dataset" {
   dataset_id = var.bq_dataset_name
-  location = var.location
+  location   = var.location
 
 }
