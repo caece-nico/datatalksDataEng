@@ -25,9 +25,24 @@ Nos permite asegurarnos que los recursos son eliminados una vez que terminamos d
 * No permite modifcar recursos que son inmutables.
 * No se puede hacer referencia a recursos que no están especificados en el file terraform.
 
+**PROVIDERS**
+
+Es codigo que permite a Terraform conectarse y deployar sobre los servidores de la nube.
+Estos providers se obtienen una vez que ejecutamos el comando 
+
+```shell
+terraform main.tf
+```
+# 2. Introduccion a GCP.
+
+Antes de crear el archivo _terraform_ es necesarios crear una _cuenta de servicios_ para indicarle a GCP quienes somos y que recursos queremos acceder, modificar o crear.
 
 ## Creacion de una cuenta de servicio
 
+_service account_ es una cuenta para software, pero que no vamos a usar como usuarios finales. Sirve para crear buckets u otros recursos.
+
+
+![pantalla de usaurio](Week-1\GCP_Terraform\img\terraform-cuenta-de-servicio.png)
 
 + Big Data
 + Storage Database
