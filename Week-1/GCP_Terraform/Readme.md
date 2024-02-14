@@ -8,10 +8,23 @@
     - [plan](#.-plan)
     - [apply](#.-apply)
     - [destroy](#.-destroy)
+4.  [Crear sesion en GCLOUD](#4.-crear-sesion-en-gcloud)
+    - [utilidad GSUTIL](#.-utilidad-gsutil)  
 
 
+## 1. Introducción a Terraform
 
-## 1. Introduccion a terraform
+```
+Nos permite hacer un setup de infraestructura como código usando human-readable configuration files.
+Es simple y nos permite hacer un seguimiento de la infraestructura.
+Es reproducible en varios equipos, pruede ser en entornos de desarrollo y test o producción.
+Nos permite asegurarnos que los recursos son eliminados una vez que terminamos de usarlos.
+```
+
+* No está hecho para modificar codigó en infraestructura.
+* No permite modifcar recursos que son inmutables.
+* No se puede hacer referencia a recursos que no están especificados en el file terraform.
+
 
 ## Creacion de una cuenta de servicio
 
