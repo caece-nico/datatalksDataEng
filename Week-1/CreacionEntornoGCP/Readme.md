@@ -5,8 +5,9 @@
     - [Creacion de VM](#.-creacion-de-vm)
     - [Cómo logearnos en VM?](#.-cómo-logearnos-en-vm?)
     - [Creacion de un config-conexion](#.-creacion-de-un-config-conexion)
+    - [Conexion a VM con VSCODE](#.-conexion-a-vm-con-vscode)
     - [Instalacion de Anaconda](#.-instalacion-de-anaconda)
-    - [Instalacion de Docker](#.-instalacon-de-docker)
+    - [Instalacion de Docker](#.-instalacion-de-docker)
     - [Instalar gcloud y gsutil](#.-gcloud-y-gsutil)
     - [Crear una sesión con permisos gcloud](#.-gcloud-y-gsutil)
     
@@ -125,6 +126,16 @@ shh de-zoomcamp
 
 Esto va a buscar directamente la conexión zoomcamp en el archivo _config_
 
+![Logeo ssh config](./img/ssh-logeo-config.png)
+
+### Conexion a VM con VSCODE
+
+Para poder conectanos debemos tener instalada la extension __ssh remote conection__
+
+![ssh icon vscode](./img/ssh-icon.png)
+
+
+
 ### Instalacion de Anaconda.
 
 [Link a anaconda para linux](https://repo.anaconda.com/archive/Anaconda3-2023.09-0-Linux-x86_64.sh)
@@ -145,7 +156,32 @@ bash Anaconda ...
 
 Una vez descargado continuamos con la instalacion.
 
+Al finalizar la instalacion escribimos __yes__ y para ver lo que generó en la instalación hacemos.
+_Anaconda_ se instala en la carpeta del usuario.
 
+![Directorio instalacion](./img/anaconda-instalacion.png)
+
+
+Escribimos el siguiente comando para ver si todo si instaló correctamente.
+
+```shell
+less .bashrc
+```
+
+![Anaconda Inicializador](./img/anaconda-bashrc.png)
+
+Vemos que lo pultimo instalado es _Anaconda_
+
+Tambien podemos escribir __which python__ y ver que se instaló dentro de anaconda.
+
+### Instalacion de Docker
+
+Docker no viene por defecto con Ubunto, lo tenemos que instalar desde la linea de comando de la VM.
+
+```shell
+sudo apt-get update
+sudo apt-get install docker.io
+```
 
 ## En nuestro GITBASH LOCAL creamos un archivo config para configurar nuestro .ssh
 
