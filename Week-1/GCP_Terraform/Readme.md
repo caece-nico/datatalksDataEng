@@ -10,6 +10,7 @@
     - [destroy](#.-destroy)
 4.  [Crear sesion en GCLOUD](#4.-crear-sesion-en-gcloud)
     - [utilidad GSUTIL](#.-utilidad-gsutil)  
+5.  [Usar variables en Terraform](#5.-Usar-variables-en-terraform)
 
 
 ## 1. Introducción a Terraform
@@ -272,3 +273,34 @@ Activated service account credentials for: [terraformapp@projectonleali.iam.gser
 ### Volvemos a copiar con los permisos necesarios.
 
 ![Copia con permisos](./img/gsutil-ok.png)
+
+## 5. Usar variables en terraform
+
+Para poder usar variables en _terraform_ necesitamos crear un nuevo archivo llamado _variables.tf_.
+Este archivo contendrá por cada parámetro que querramos extender el siguiente formato.
+
++ Archivo variable.tf
+
+```python
+variable "gcs_bucket_name" {
+  description = "Nombre del bucket"
+  default     = "projectonleali-mibucket"
+}
+```
+
+Donde _variable_ es el nombre de la variable que vamos a usar en el archivo _main.tf_ y _default_ será el valor que contendrá esa variable.
+
++ Archivo _main.tf_
+
+```python
+resource "google_storage_bucket" "auto-expire" {
+  name          = var.gcs_bucket_name
+  location      = var.location
+  force_destroy = true
+```
+
+En este ejemplo usamos dos variables:
+1. __gcs_bucket_name__
+2. __location__
+
+ambas son llamadas con __var__
