@@ -193,6 +193,42 @@ sudo apt-get update
 sudo apt-get install docker.io
 ```
 
+![docker-version](./img/docker-version.png)
+
+_El problema con docker es que no podemos ejecutarlo con los permisos existentes_
+
+```shell
+(base) nlealiapp@de-zoomcamp:~$ docker run hello-world
+docker: permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Post "http://%2Fvar%2Frun%2Fdocker.sock/v1.24/containers/create": dial unix /var/run/docker.sock: connect: permission denied.
+See 'docker run --help'.
+```
+
+Para solucionar esto usamos __run docker without sudo__
+
+1. add the __docker__ group if it doesnt exist
+
+```
+sudo groupadd docker
+```
+
+2. Add the connected user $USER to docker group
+
+```shell
+sudo gpasswd -a $USER docker
+```
+
+3. Restart the _docker_ daemon
+
+```shell
+sudo service docker restart
+```
+
+Ahora se puede ejecutar de prueba __docker hello-world__
+
+![Docker-hello-world](./img/Docker-hello-world.png)
+
+4. Logout and Login
+
 ## En nuestro GITBASH LOCAL creamos un archivo config para configurar nuestro .ssh
 
 ```
