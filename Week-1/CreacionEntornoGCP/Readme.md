@@ -415,6 +415,8 @@ gunzip yellow_tripdata_2021-01.csv.gz
 
 4. Creamos la notebook
 
+La notebook de este ejemplo la encontramos en /DockerComposeRefactoring
+
 
 5. Cuando importamos sqlalchemy puede ser que no funcione la libreria __psycopg2__ la instalamos haciendo __conda install psycopg2__
 
