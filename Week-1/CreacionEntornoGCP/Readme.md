@@ -3,6 +3,7 @@
 1. [Introducción](#1.-introducción)
 2. [Creación del entorno GCP](#2.-creacion-del-entorno-gcp)
     - [Creacion de VM](#.-creacion-de-vm)
+    - [Cómo logearnos en VM?](#.-cómo-logearnos-en-vm?)
     - [Instalacion de Anaconda](#.-instalacion-de-anaconda)
     - [Instalacion de Docker](#.-instalacon-de-docker)
     - [Instalar gcloud y gsutil](#.-gcloud-y-gsutil)
@@ -23,7 +24,7 @@ Primero es necesario crar una clave shh para poder conectarnos a los servicios d
 _gcp_ es el nombre que yo decido ponerle al .shh de google
 
 ```bash
- ssh-keygen -t rsa -f gcp -C nlealiapp -b 2048
+ ssh-keygen -t rsa -f gcp_2 -C nlealiapp -b 2048
 ```
 
 ![crea usuario ssh](./img/crea-ssh.png)
@@ -54,7 +55,7 @@ HOST de-mio
     IdentifyFile C:/users/leali/.ssh/gcp
 ```
 
-## 2. Creación del entorno GCP
+## 2. Creacion del entorno GCP
 
 Una vez creada la clave _.ssh_ y mapeada en __Cloud Computing Service__ podemos crear la VM.
 
@@ -79,32 +80,32 @@ Según la combinación que CPU + Memoria el precio varia.
 
 Esta IP es la que nos permite conectarnos desde nuestra PC local a la VM, usando las credenciales _.ssh_
 
-### Poner la clave en gcp
+### Cómo logearnos en VM?
 
-metadeta -> ssh key
+Abrimos una sesión de _gitbash_ y escribimos:
 
-```
-cat gcp.pub #copiar y pegar.
-```
-
-### Cómo logearme a una VM de google
-
-```
-ssh -i gcp nlealiapp@34.134.173.41 #la ip la sacamos de la consola de gcp cuando se crea la imagen de la VM
+```shell
+ssh -i ~/.ssh/gcp_2 nlealiapp@IP
 ```
 
-nlealiapp es el usuario que usamos para creala
+![Logeo ssh](./img/vm-logeo-ssh.png)
 
-### Comandos básicos dentro de la VM
+Con esto ya estamos legeados dentro de la VM.
+
++ Escribimos __gcloud --version__  para ver la versión de los paquetes.
+
+
+#### Comandos básicos dentro de la VM
 
 - htop para ver uqe maquina tenemos
 - gcloud --version 
 
 
-## 2. Instalacion de Anaconda.
+### Instalacion de Anaconda.
 
-[Link a aanaconda para linux](https://repo.anaconda.com/archive/Anaconda3-2023.09-0-Linux-x86_64.sh)
+[Link a anaconda para linux](https://repo.anaconda.com/archive/Anaconda3-2023.09-0-Linux-x86_64.sh)
 
+En la consola de la VM hacemos.
 
 ```
 wget https://repo.anaconda.com/archive/Anaconda3-2023.09-0-Linux-x86_64.sh
@@ -115,6 +116,12 @@ Lo escribimos en la VM y luego de la descarga instalamos anaconda.
 ```
 bash Anaconda ...
 ```
+
+![install-anaconda](./img/anaconda-descarga.png)
+
+Una vez descargado continuamos con la instalacion.
+
+
 
 ## En nuestro GITBASH LOCAL creamos un archivo config para configurar nuestro .ssh
 
