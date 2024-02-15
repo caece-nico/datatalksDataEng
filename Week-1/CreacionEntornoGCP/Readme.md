@@ -4,6 +4,7 @@
 2. [Creación del entorno GCP](#2.-creacion-del-entorno-gcp)
     - [Creacion de VM](#.-creacion-de-vm)
     - [Cómo logearnos en VM?](#.-cómo-logearnos-en-vm?)
+    - [Creacion de un config-conexion](#.-creacion-de-un-config-conexion)
     - [Instalacion de Anaconda](#.-instalacion-de-anaconda)
     - [Instalacion de Docker](#.-instalacon-de-docker)
     - [Instalar gcloud y gsutil](#.-gcloud-y-gsutil)
@@ -100,6 +101,29 @@ Con esto ya estamos legeados dentro de la VM.
 - htop para ver uqe maquina tenemos
 - gcloud --version 
 
+
+### creacion de un config-conexion
+
+```
+Podemos crear un archivo config para no tener que escribir la conexion cada vez que queremos logearnos en la VM.
+```
+
+En la consola bash escribimos _touch config_
+
+```shell
+Host de-zoomcamp
+    HostName IPpublica
+    User nlealiapp
+    IndentityFile c:/Users/mi_usuario/.ssh/gcp
+```
+
+Para conectarnos hacemos.
+
+```shell
+shh de-zoomcamp
+```
+
+Esto va a buscar directamente la conexión zoomcamp en el archivo _config_
 
 ### Instalacion de Anaconda.
 
