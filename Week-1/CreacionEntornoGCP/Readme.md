@@ -8,6 +8,7 @@
     - [Conexion a VM con VSCODE](#.-conexion-a-vm-con-vscode)
     - [Instalacion de Anaconda](#.-instalacion-de-anaconda)
     - [Instalacion de Docker](#.-instalacion-de-docker)
+    - [Instalacion de docker-compose](#.-instalacion-de-docker-compose)
     - [Instalar gcloud y gsutil](#.-gcloud-y-gsutil)
     - [Crear una sesión con permisos gcloud](#.-gcloud-y-gsutil)
     
@@ -223,11 +224,70 @@ sudo gpasswd -a $USER docker
 sudo service docker restart
 ```
 
+4. Logout and Login
+
 Ahora se puede ejecutar de prueba __docker hello-world__
 
 ![Docker-hello-world](./img/Docker-hello-world.png)
 
-4. Logout and Login
+
+### Instalacion de docker-compose
+
+Para instalar Docker-Compose vamos al [GITHUB](https://github.com/docker/compose/releases)
+
+Elegimos la version: __V2.2.3__ version Linux __docker-compose-linux-x86_64__
+
+1. En la carpeta de usuario creamos un directorio bin
+
+```
+mkdir bin
+cd bin
+```
+
+2. Descargamos docker-compose y especificamos el output __docker-compose__
+
+```
+wget https://github.com/docker/compose/releases/download/v2.24.6/docker-compose-linux-x86_64 -O docker-compose
+```
+
+3. Esto nos crea un archivo .sh pero Linux no sabe que es ejecutable, le cambiamos el modo.
+
+```
+chmod +x docker-compose
+```
+
+El color cambia a __verde__ indicando que es un ejecutable.
+
+![chmod on docker](./img/docker-compose-chmod.png)
+
+4. Probamos que funciona.
+
+```
+./docker-compose --version
+```
+
+5. No queremos hacer esto desde el __bin__ directorio de nuestro usuario. LO agregamos al PATH variable.
+
+Para poder hacer esto debemos estar en el directorio de nuestro proyecto, __no es la nueva carpeta que creamos__
+
+```
+nano .bashrc
+```
+
+Al final del archivo escribimos:
+
+![archivo-nano](./img/docker-compose-path-nano.png)
+
+
+```
+export PATH="${HOME}/bin:${PATH}"
+```
+
+![probamos](./img/docker-compose-path.png)
+
+
+
+
 
 ## En nuestro GITBASH LOCAL creamos un archivo config para configurar nuestro .ssh
 
