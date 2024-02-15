@@ -134,7 +134,17 @@ Para poder conectanos debemos tener instalada la extension __ssh remote conectio
 
 ![ssh icon vscode](./img/ssh-icon.png)
 
+Desde visual code buscamos la opción de conexión y hacemos click.
 
+![shh-to-host](./img/ssh-connect-to-host.png)
+
+Esto busca en nuestro fichero .ssh algún archivo __config__ y nos muestra los _host_ disponibles.
+
+![select host](./img/ssh-select-to-host.png)
+
+Una vez elegido el Host, nos puede pedir nuestra frase, si es que creamos una. Luego abre otra ventana y nos muestras nuestra VM.
+
+![ssh vscode](./img/ssh-vscode.png)
 
 ### Instalacion de Anaconda.
 
