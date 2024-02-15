@@ -9,6 +9,7 @@
     - [Instalacion de Anaconda](#.-instalacion-de-anaconda)
     - [Instalacion de Docker](#.-instalacion-de-docker)
     - [Instalacion de docker-compose](#.-instalacion-de-docker-compose)
+3. [Ejecutar un contenedor de Docker-compose](#3.-ejecutar-un-contenedor-de-docker-compose)
     - [Instalar gcloud y gsutil](#.-gcloud-y-gsutil)
     - [Crear una sesión con permisos gcloud](#.-gcloud-y-gsutil)
     
@@ -285,6 +286,67 @@ export PATH="${HOME}/bin:${PATH}"
 
 ![probamos](./img/docker-compose-path.png)
 
+
+## 3. Ejecutar un contenedor de Docker-Compose
+
+Tomamos como ejemplo el la imagen del repositorio
+
+```
+https://github.com/caece-nico/datatalksDataEng/tree/master
+```
+
+1. Copiamos el repositorio
+
+git clone https://github.com/caece-nico/datatalksDataEng/tree/master
+
+![git clone](./img/git-clone.png)
+
+2. Ejecutamos docker-compose (desde el repositorio) para instalar pgadmin y postgres, directorio __DockerComposeRefactoring__
+
+```
+docker-compose up -d
+```
+
+![docker-compose-up-d](./img/docker-compose-up-d.png)
+
+Importante: __Puede ser que haya que cambiar el directorio de Postgres, de /Postgres a ./Postgres__
+
+3. Comprobamos los servicios.
+
+Hacemos __docker ps__ para ver lo que está corriendo y en que puerto.
+
+4. Instalamos __pgcli__
+
+Desde el directorio HOME
+
+```
+cd ~/
+PIP install pgcli
+pgcli --h localhost -U root -d ny_taxy
+```
+
+|parametro|descripcion|
+|---------|-----------|
+|h| HOST|
+|U|USUARIO|
+|d|Base de datos|
+
+![pgcli-conn](./img/pgcli-admin.png)
+
+Vemos que se conectó aunque dió varios errores. __Una mejor opción es usar conda para instalarlo__
+
+5. Primero lo desinstalamos.
+
+```
+pip uninstall pgcli
+```
+
+6. Instalamos usando __conda__
+
+```shell
+conda install -c conda-forge pgcli
+pip install _U mycli
+```
 
 
 
