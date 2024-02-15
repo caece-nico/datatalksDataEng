@@ -10,6 +10,9 @@
     - [Instalacion de Docker](#.-instalacion-de-docker)
     - [Instalacion de docker-compose](#.-instalacion-de-docker-compose)
 3. [Ejecutar un contenedor de Docker-compose](#3.-ejecutar-un-contenedor-de-docker-compose)
+4. [Como hacer port forward a nuestro equipo local](#4.-como-hacer-port-forward-a-nuestro-equipo-local)
+    - [Como iniciar jupyter](#.-como-iniciar-jupyter)
+5. [Prueba del entorno en general](#5.-prueba-del-entorno-general)
     - [Instalar gcloud y gsutil](#.-gcloud-y-gsutil)
     - [Crear una sesión con permisos gcloud](#.-gcloud-y-gsutil)
     
@@ -345,11 +348,79 @@ pip uninstall pgcli
 
 ```shell
 conda install -c conda-forge pgcli
-pip install _U mycli
+pip install -U mycli
 ```
 
+## 4. Como hacer port forward a nuestro equipo local
+
+En la imagen ![puertos docker](./img/docker-ps.png) vemos los puertos que están utilizando _postgres_ y _pgadmin_
+
+Nos podemos conectar a estos servicios desde nuestro equipo local exponiendo los puertos.
+
+1. En VSCODE desde donde estamos logeados en nuestro cloud, vamos a __ports__
+
+Especificamos el puerto de __postgres__ 5432.
+
+![Forwarding postgres](./img/vscode-port-forwarding.png)
+
+Exponiendo el puerto nos pudimos conectar, por ejemplo desde __dbeaver__
+
+![conexion db](./img/postgers-forward-port-dbeaver.png)
+
+__cuidado__ Si tenemos un contenedor de _DOCKER_ ejecutando un _postgres_ tambien en _localhost_ por defecto nos conectamos al local y __no__ al cloud.
+
+2. Podemos hacer lo mismo con _pgadmin_
+
+Exponemos el puerto 8080
+
+### Como iniciar Jupyter
+
+1. Ponemos en un bash
+
+```
+jupyter notebook
+```
+
+![jupyter-notebook-ini](./img/jupyter-notebook-ini.png)
+
+El resultado de esto son los puertos donde está corriendo
+
+2. Hacemos forward de esos puertos en VSCODE puerto 8888
+
+Y ahora entramos en la dirección que muestra el bash.
+
+## 5. Prueba del entorno general
+
+```
+Vamos a probar que nuestro pipeline local funciona en la nube.```
+
+1. bajamos el dataset 
+
+```shell
+wget https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/yellow_tripdata_2021-01.csv.gz
+```
+
+2. De ser necesario instalamos unzip o gunzip
+
+```shell
+sudo apt install unzip
+```
+
+3. Descomprimimos el dataset.
+
+```shell
+unzip yellow_tripdata_2021-01.csv.gz
+gunzip yellow_tripdata_2021-01.csv.gz
+```
+
+4. Creamos la notebook
 
 
+5. Cuando importamos sqlalchemy puede ser que no funcione la libreria __psycopg2__ la instalamos haciendo __conda install psycopg2__
+
+6. Siempre recordar poner los puertos forwarding.
+
+![ejecucion](./img/prueba-pipeline.png)
 
 ## En nuestro GITBASH LOCAL creamos un archivo config para configurar nuestro .ssh
 
