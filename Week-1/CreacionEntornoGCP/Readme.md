@@ -13,8 +13,11 @@
 4. [Como hacer port forward a nuestro equipo local](#4.-como-hacer-port-forward-a-nuestro-equipo-local)
     - [Como iniciar jupyter](#.-como-iniciar-jupyter)
 5. [Prueba del entorno en general](#5.-prueba-del-entorno-general)
+6. [Instalacion de Terraform](#6.-instalacion-de-terraform)
+    - [Como pasar archivos locales al cloud por sftp](#.-como-pasar-archivos-locales-al-cloud-por-sftp)
     - [Instalar gcloud y gsutil](#.-gcloud-y-gsutil)
     - [Crear una sesión con permisos gcloud](#.-gcloud-y-gsutil)
+
     
 
 
@@ -424,34 +427,78 @@ La notebook de este ejemplo la encontramos en /DockerComposeRefactoring
 
 ![ejecucion](./img/prueba-pipeline.png)
 
-## En nuestro GITBASH LOCAL creamos un archivo config para configurar nuestro .ssh
+## 6. Instalacion de terraform
 
 ```
-Host de-zoomcamp
-	HostName 34.134.173.41
-	User nlealiapp
-	IdentityFile gcp
+Vamos a instalar Terraform en la VM para poder crear y manipular los recursos necesarios para el proyecto.
+```
+1. Descargar Terraform a la carpeta __/bin__
+
+![terraform binario](./img/terraform-binario.png)
+
+2. Desde una consola bash hacemos
+
+```shell
+wget https://releases.hashicorp.com/terraform/1.7.3/terraform_1.7.3_linux_amd64.zip
 ```
 
-IdentifyFile es la ruta del archivo, si vamos a crear config en .shh lo pondemos así, sino debemos poner la ruta completa.
+3. Una vez dscargado hacemos un _unzip_ del archivo, siempre en el directorio /bin que creamos nosotros en una carpeta de usuario
 
-__IMPORTANTE__ Vcode pide la ruta completa: ~/.ssh/gcp sinó no funciona.
-
-### Ejecución.
-
-```bash
-shh de-zoomcamp
+```shell
+unzip terraform_1.7.3_linux_amd64.zip
 ```
 
+Vemos que el archivo resultante ya es un ejecutable.
 
-#### INstalamos Docker
+![terraform unzip](./img/terraform-unzip.png)
 
-```bash
-sudo apt-get update
-sudo apt-get install docker.io
+### Como pasar archivos locales al cloud por sftp
+
+Si hicimos los pasos anteriores para instalar Terraform lo único que falta es pasar los archivos con las credenciales a la VM.
+Estas credenciales se crean como cuenta de servicio. Para mas datos consultar [link a tutorial de Terraform](https://github.com/caece-nico/datatalksDataEng/tree/master/Week-1/GCP_Terraform)
+
+1. Verificar que descargamos el .json con la clave de Google Service Account
+
+![credenciales](./img/sftp-credenciales.png)
+
+Vemos que las credenciales entán en __mi equipo local__
+
+2. Abrimos una conexion por __sftp__ a nuestro ssh
+
+```shell
+sftp de-zommcamp
 ```
 
-#### VS
+3. Creamos una carpeta donde copiar el archivo en la VM
 
-Instalamos la extencion remote ssh open folder on remote.
+```
+mkdir .gc
+cd .gc
+```
+
+4. Copiamos el archivo desde la misma terminal.
+
+```
+put mis_crdenciales.json 
+```
+
+![copia de archivo](./img/sftp-copia.png)
+
+5. Creamos una variable que apunte a nustras credenciales.
+
+```shell
+export GOOGLE_APLICATION_CREDENTIALS=~/.gc/mis_credenciales.json
+```
+
+6. Usamos __bash__ para autenticar nuestro __google cli__
+
+```shell
+gcloud auth activate-service-account --key-file $GOOGLE_APLICATION_CREDENTIALS
+```
+
+![activacion](./img/gcloud-credentials.png)
+
+Vemos que la cuenta quedó activada.
+
+7. Creamos los recursos de Terraform usando la nueva autenticacion sin pasar un __file(mis_credenciales.json)__ en el __main.tf__
 
