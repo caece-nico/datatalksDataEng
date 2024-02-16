@@ -502,3 +502,22 @@ Vemos que la cuenta quedó activada.
 
 7. Creamos los recursos de Terraform usando la nueva autenticacion sin pasar un __file(mis_credenciales.json)__ en el __main.tf__
 
++ terraform init
+
+![terraform-init](./img/terraform-init.png)
+
++ terraform plan
+
+![terraform-plan](./img/tarraform-plan.png)
+
++ terraform apply
+
+![terraform-apply](./img/terraform-apply.png)
+
+__Si el apply no funciona puede ser un tema de credenciales__
+Otra forma de logearnos es dando permisos desde el _browser_.
+Desde la terminal bash de la VM poner:
+
+
+gcloud auth application-default login
+
