@@ -137,6 +137,18 @@ spark.createDataFrame(df).schema
 spark.createDataFrame(df).head(5)
 ```
 
+El formato del parametro esquema, por si lo queremos definir a mano es:
+
+```python
+from pyspark.sql import types
+
+v_esquema = types.StructType([
+    types.StructField('Columna_1',types.LongType(), True),
+    types.StructField('Columna_2',types.Timestamp(),True),
+    types.StructField('Columna_3', types.IntegerType(), True),
+    types.StructField('Columna_4', types.DoubleType(), True)
+                            ])
+```
 ### Shell/Bash
 
 Muchas cosas se pueden hacer desde Python o PySprk pero BASH ayuda a hacer algunas mas rápido.
