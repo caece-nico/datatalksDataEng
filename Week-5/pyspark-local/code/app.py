@@ -8,8 +8,9 @@ print(type(sys.argv))
 #print(f'Primer parametro {sys.argv[1]}' )
 #print(f'Segundo parametro {sys.argv[2]}' )
 
-import os
 
-spark = SparkSession.builder.appName("niclas").getOrCreate()
-
-print(spark)
+spark = SparkSession \
+    .builder\
+    .master("local[*]") \
+    .appName('test') \
+    .getOrCreate()
