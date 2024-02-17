@@ -3,7 +3,12 @@
 1. [Introducción a Batch Processing](#1.-Introduccion-a-batch-processing)
 2. [Intro a Apache Spark](#2.-introduccion-a-apache-spark)
     - [INstalar jupyter Notebooks](#.-instalar-jupyter-notebooks)
-3. [Data de ejemplo](#3.-dataos-de-ejemplo)
+3. [Data de ejemplo](#3.-datos-de-ejemplo)
+    - [pyspark](#.-pyspark)
+    - [pandas](#.-pandas)
+    - [Shell/Bash](#.-shell/bash)
+    - [Formato Parquet](#.-formato-parquet)
+
 
 
 ## 1. Introduccion a Batch Processing
@@ -66,3 +71,113 @@ sudo apt-get install python3-pip
 
 ## 3. Datos de ejemplo
 
+```
+Para este primer ejemplo de Spark vamos a trabajar con los  datasets
+https://github.com/DataTalksClub/nyc-tlc-data/releases/
+
+La notebook final es /code/primer_ejemplo_app.ipynb
+```
+
+En esta primer aproximación a Spark usamos 
++ pandas
++ pyspark
++ comandos shell/bash
++ formato parquet
+
+### pyspark
+
+1. Para usar PySpark primero debemos importar los modulos
+
+```python
+import pyspark
+from pyspark.sql import SparkSession
+```
+2. Creamos una sesión.
+
+```python
+spark = SparkSession.builder\
+        .master("local[*]") \
+        .appName("Test") \
+        .getOrCreate()
+```
+
+3. Podemos abrir un archivo .csv como un _dataframe_
+
+```python
+df =    spark \
+        .read \
+        .schema(schema=mi_schema) \ 
+        .options("header","true") \
+        .csv("file.csv")
+
+df.head()
+df.schema    
+```
+
+_schema_ es optativo, si no se especifica lo infiere y casi siempre toma todo como _string_.
+
+
+### Pandas
+
+Pandas, en general, lo vamos a usar cuando tenemos pocos datos. Si tenemos un DataSet con 1 millon de registros no sirve.
+Pero lo podemos usar para hacer inferencias o un mini análisis previo.
+
+Por ejemplo con _Spark_ lo podemos usar para inferir el esquema de las columnas. _Esto es útil porque pandas intenta determinar el tipo de dato de todo lo que pueda_ Entonces nos queda un _dataframe_ con un pre-esquema que luego podemos refinar.
+
+__IMPORTANTE__ Pandas tiene un error que no permite crear un dataframe de Spark.
+[La solución está en este link](https://stackoverflow.com/questions/75926636/databricks-issue-while-creating-spark-data-frame-from-pandas)
+
+
+```python
+import pandas as pd
+pd.DataFrame.iteritems = pd.DataFrame.items
+
+df = pd.read_csv(path, header=True)
+spark.createDataFrame(df).schema
+spark.createDataFrame(df).head(5)
+```
+
+### Shell/Bash
+
+Muchas cosas se pueden hacer desde Python o PySprk pero BASH ayuda a hacer algunas mas rápido.
+
++ Comandos útiles
+
+|Comando|descripcion|ejemplo|
+|-------|-----------|-------|
+|wget|Permite bajar desde la web un archivo|wget Url -P PATH|
+|wc|Cuenta las palabras en un archivo|wc -l PATH|
+|gunzip|Descomprime un archivo .gz|gunzip -d PATH|
+|gzip|Comprime un archvio|gzip -1 PATH|
+|head -n|Obtiene los n primeros registros de un archvio|head -n 50 PATH > PATH_DESTINO|
+
+
+```
+Se puede obtener mas informacion de los parametros de estos comandos haciendo 
+comando --help o comando -h
+```
+
+
+### Formato Parquet
+
+```
+El formato Parquet es particularmente útil en Spark porque permite distribuir la carga de los nodos de Spark en varios Workers.
+```
+
+![Ilustracion ejecutores](./img/clusters-spark.png)
+
+En este ejemplo tenemos un _Datalake_ de google con N _files_ los cuales son procesados por los _ejecutores_ del _cluster de spark_.
+PUede haber mas archivos que ejecutores, en este caso el archivo que no esté siendo procesado, será tomado por el cluster que quede libre.
+
+__Qué pasa si solo tenemos un archivo .csv?__
+
+Esto sería ineficiente porque los archivos no pueden ser _particionados_ entre los clusters para ser procesados, lo que haría que un único cluster tome el archivo y lo procese dejando a los otros _n cluster_ sin hacer nada.
+
+_Podemos particionar un __dataframe__ usando el comando _repartition__ 
+
+```python
+df.repartition(n)
+df.write.parquet(PATH)
+```
+
+Esto lo que hará es crearnos n número de archivos en el directorio PATH.
