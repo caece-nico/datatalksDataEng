@@ -8,6 +8,10 @@
     - [pandas](#.-pandas)
     - [Shell/Bash](#.-shell/bash)
     - [Formato Parquet](#.-formato-parquet)
+4. [Spark Dataframes](#4.-spark-dataframes)
+    - [Actions Vs. Transformations](#.-actions-vs-transformations)
+    - [pyspark.sql functions](#.-pyspark.sql-functions)
+    - [definicion de udf](#.-definicion-de-udf)
 
 
 
@@ -193,3 +197,60 @@ df.write.parquet(PATH)
 ```
 
 Esto lo que hará es crearnos n número de archivos en el directorio PATH.
+
+
+## 4. Spark Dataframes
+
+### Actions vs. Transformations
+
+Lo que no se ejecuta de forma inmediata se llama __Transformaciones__ son lazzy
++ select
++ filtering
++ joins
++ group by
++ withColumn()
+
+
+Lo que se ejecuta se llama __Acciones__ (Se ejecutan inmediatamente)
++ show()
++ take()
++ head()
++ write()
+
+### PySpark.sql functions
+
+Spark viene con algunas funciones incorporadas como por ejemplo.
+
+```python
+from pyspark.sql import functions as F
+
+F.to_date()
+
+df.withColumn('column_nueva', f.to_date(df.columna_a_cambiar)).show()
+```
+
+La funcion F.to_date() solo mantiene la parte de la facha, eliminando todo lo demás.
+
+### Definicion de UDF
+
+```
+En PySpark podemos definir nuestras propias funciones que luego utilizaremos en nuestro ETL.
+Generalmente definimos en una UDF lo que no se puede expresar en SQL.
+```
+
+```python
+def crazy_stuff(base_num):
+    num = int(base_num[1:])
+    if num % 7 == 0:
+        return f's/{num:03x}'
+    else:
+        return f'e/{num:03x}
+```
+
+```python
+cazy_studd_udf = F.udf(crazy_stuff, returnType=types.StringType())
+
+df \
+    .withColumn('columna_nueva',cazy_studd_udf(df.columna_x))\
+    .show(5)
+```
