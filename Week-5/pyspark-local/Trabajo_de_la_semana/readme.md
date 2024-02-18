@@ -1,6 +1,7 @@
 # Introducción al TP de la Semana.
 
 1. [Origen de los datos](#1.-origen-de-los-datos)
+    - [Modificacion propuesta](#.-modificacion-propuesta)
 
 
 # 1. Origen de los datos
@@ -31,5 +32,20 @@ Desde la linea de comando hacemos
 
 ```shell
 ./download_data.sh yellow 2021
+./download_data.sh green 2021
+./download_data.sh yellow 2020
+./download_data.sh green 2020
 ```
 
+Para poder visualizar mejor la estructura de los archivos podemos instalar tree
+
+```shell
+sudo apt-get install tree
+```
+
+![comando tree](../img/tutorial-spark/tree-comando.png)
+
+## Modificacion propuesta
+
+Para hacer mas real este proyecto, no vamos a trabajar con los archivos __.parquet__ del punto 1.
+Lo que hacemos es volver a cargarlos en .csv y guardarlos en un drive y simular que les debemos crear un nuevo esquema y luego pasarlos a __.parquet__

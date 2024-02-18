@@ -16,9 +16,10 @@ for MONTH in {1..12}; do
     LOCAL_PREFIX="../data/raw/${TAXI_TYPE}/${YEAR}/${FMONTH}"
     LOCAL_PFILE="${TAXI_TYPE}_${YEAR}_${FMONTH}.parquet"
     LOCAL_PATH="${LOCAL_PREFIX}/${LOCAL_PFILE}"
-    #echo ${LOCAL_PATH}
+    echo ${LOCAL_PATH}
 
-    wget ${URL} -P ${LOCAL_PATH}
+    mkdir -p ${LOCAL_PREFIX}
+    wget ${URL} -O ${LOCAL_PATH}
 
     #gzip ${LOCAL_PATH}
 
