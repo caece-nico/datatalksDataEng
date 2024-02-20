@@ -12,6 +12,7 @@
     - [Actions Vs. Transformations](#.-actions-vs-transformations)
     - [pyspark.sql functions](#.-pyspark.sql-functions)
     - [definicion de udf](#.-definicion-de-udf)
+    - [TransformacionesBasicas](#.-transaformaciones-basicas)
 
 
 
@@ -180,7 +181,7 @@ comando --help o comando -h
 El formato Parquet es particularmente útil en Spark porque permite distribuir la carga de los nodos de Spark en varios Workers.
 ```
 
-![Ilustracion ejecutores](./img/clusters-spark.png)
+![Ilustracion ejecutores](../img/clusters-spark.png)
 
 En este ejemplo tenemos un _Datalake_ de google con N _files_ los cuales son procesados por los _ejecutores_ del _cluster de spark_.
 PUede haber mas archivos que ejecutores, en este caso el archivo que no esté siendo procesado, será tomado por el cluster que quede libre.
@@ -253,4 +254,85 @@ cazy_studd_udf = F.udf(crazy_stuff, returnType=types.StringType())
 df \
     .withColumn('columna_nueva',cazy_studd_udf(df.columna_x))\
     .show(5)
+```
+
+
+### Transformaciones Basicas
+
+#### .withColumn
+
+```
+Se usa para agregar una nueva columna al DF o para hacer algo sobre una columna como por ejemplo aplicar una función tango UDF o funcion de Spark.
+```
+
+```python
+from pyspark.sql import functions as F
+
+df.withColumn('mi_columna_nueva', F.to_date('mi_columna_vieja').show())
+```
+
+#### .select
+
+```
+Se usa para seleccionar columnas de un DF
+```
+
+```python
+v_columnas= ['col1', 'col2', 'col3']
+df.select(v_columnas).show()
+```
+
+#### .filter
+
+```
+Permite hacer un filtrado de los registros del DataFrame
+```
+
+```python
+df.filter(df['colA']> 45)
+```
+
+#### .unionAll
+
+```
+Permite unir dos o mas DF que tengan el mismo Schema
+```
+
+```python
+df_final = df.unionAll(df_2)
+```
+
+#### groupBy y .count
+
+```
+Generalmente se usan juntos, permite agrupar y totalizar.
+```
+
+```python
+df.groupBy('colA').count()
+```
+
+#### createOrReplaceTempView
+
+```
+Permite crear una vista para que pueda ser accedida desde spark.sql()
+```
+```python
+df.createOrReplaceTempView('nombre_de_la_vista')
+
+spark.sql("""
+            select *
+            from nombre_de_la_vista
+            LIMIT 10; 
+        """).show()
+```
+
+
+#### .coalesce
+
+```
+Coalesce se usa para reducir una partición del dataset.
+Por ejemplo si queremos escribir un df a parquet y genera muchos archivos en el directorio destino, lo que podemos hacer es:
+df.coalesce(1).write.parquet(path)
+Esto reduce la partición de DF a 1.
 ```

@@ -2,6 +2,8 @@
 
 1. [Origen de los datos](#1.-origen-de-los-datos)
     - [Modificacion propuesta](#.-modificacion-propuesta)
+2. [Spark Internals](#2.-spark-internals)
+    - [groupby](#.-groupby)
 
 
 # 1. Origen de los datos
@@ -49,3 +51,24 @@ sudo apt-get install tree
 
 Para hacer mas real este proyecto, no vamos a trabajar con los archivos __.parquet__ del punto 1.
 Lo que hacemos es volver a cargarlos en .csv y guardarlos en un drive y simular que les debemos crear un nuevo esquema y luego pasarlos a __.parquet__
+
+## 2. Spark internals
+
+```
+En Spark Tenemos un nodo Cluster llamado master (puerto 4040) que es el que se encarga de coordinar a los otors nodos.
+Este Master es el que inicializamos cuando hacemos:
+
+spark = SparkSession.builder.master('local[*]').appName('test).createOrReplace()
+```
+![Spark Clusters](../img/spark_cluster_repre.png)
+
+
+Este nodo Master gestiona la visa de los otros nodos y los reemplaza en caso de ser necesario.
+AL momento de leer de un DataFRame que generalmente están en S3 lo fragmenta y lo envia de a partes a los distintos nodos, una vez que estos terminan otro nodo toma el siguiente fagmento.
+
+
+### GroupBy
+
+### Joins
+
+
