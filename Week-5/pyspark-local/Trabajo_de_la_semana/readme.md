@@ -28,6 +28,10 @@ https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2020-01.parquet
 
 Para descargar estos datasets usamos un script .bash __/code/download.sh__
 
+Tambien están disponibles en el git de l curso:
+
+https://github.com/DataTalksClub/nyc-tlc-data?tab=readme-ov-file
+
 ## Como se ejecuta este script?
 
 Desde la linea de comando hacemos
