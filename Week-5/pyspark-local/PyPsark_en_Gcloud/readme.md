@@ -266,3 +266,68 @@ mkdir lib
 cd lib
 gsutil cp gs://hadoop-lib/gcs/gcs-connector-hadoop3-2.2.5.jar gcs-connector-hadoop3-2.2.5.jar
 ```
+
+![hadoop download](./img/hadoop-download.png)
+
+con esto en la carpeta __lib__ modificamos el código de la notebook __prueba_con_jar__
+
+### 4.3 Modificamos la Notebook.
+
+```
+Notar que tenemos creado el directorio .gc en el cloud donde está nuestra clave de servicios.
+cd ~/.gc
+nano .gc/projectonleali-649724cf41f9.json Esto es solo para comprobar que existe.
+```
+
+### 4.4 Primer problema
+
+Por algún motivo no encuentra el .jar que está en el directorio __~/lib/__
+Lo intenta buscar en :
+
+![error jar](./img/hadoop-problema.png)
+
+Vamos a intentar copiar el .jar en el directorio desde donde se ejecuta el código.
+
+```python
+credentials_location = '/home/nlealiapp/.gc/projectonleali-649724cf41f9.json'
+
+conf = SparkConf() \
+    .setMaster('local[*]') \
+    .setAppName('Mipruebajar') \
+    .set("spark.jars", "./lib/gcs-connector-hadoop3-2.2.5.jar") \
+    .set("spark.hadoop.google.cloud.auth.service.account.enable", "true") \
+    .set("spark.hadoop.google.cloud.auth.service.account.json.keyfile", credentials_location)
+```
+
+![hadoop copy](./img/hadoop-copy.png)
+
+En caso de que siga sin funcionar tambien copiamos el  .jar en el directorio 
+
+```shell
+cd spark/spark-3.3.2-bin-hadoop3/jars/
+```
+
+![hadoop spark jar](./img/hadoop-cp-jar-spark.png)
+
+### 4.5 Probamos crear acceder al archivo de google storage.
+
+```python
+df_google = spark.read.parquet("gs://projectonleali-mibucketdataproc/data/green/2020/01/green_2020_01.parquet")
+
+df_google.createOrReplaceTempView('mi_vw')
+
+df_totalizado = spark.sql("""
+                          select PULocationID as ZoneID,
+                          date_trunc('day', lpep_pickup_datetime) as date,
+                          sum(total_amount) as totalAmount
+                          from mi_vw
+                          group by ZoneID, date
+                          """)
+                          
+df_totalizado.coalesce(1).write.parquet("gs://projectonleali-mibucket/reportes/total_grenn.parquet")
+```
+
+No dió ningpu error. Está OK
+
+Tambien podemos escribir.
+
