@@ -3,6 +3,7 @@
 1. [Introducción](#1.-Introduccion)
 2. [Instalacion de pyspark](#2.-instalacion-de-pyspark)
 3. [Crear notebook y exponer puertos](#3.-crear-notebook-y-exponer-puertos)
+4. [INstalar componentes para GS](#4.-instalar-componentes-para-gs)
 
 
 ## 1. Introduccion
@@ -187,6 +188,9 @@ Tambien podemos usar __VSCODE__
 
 Probamos que pyspark funciona correctamente.
 
+Esta notebook esta disponible en 
+__Week-5/pyspark-local/PyPsark_en_Gcloud/notebooks/prueba_entorno_spark.ipynb__
+
 ```python
 from  pyspark.sql import SparkSession
 
@@ -216,3 +220,49 @@ df.show(5)
 
 ![spark-read-parquet](./img/spark-cloud-read.png)
 
+Tambien es importante notar que podemos exponer el puerto de Spark en el 4040 y ver el estado de los Jobs. AL master le pusimos __test01__ y en el monotor se muestra lo mismo.
+
+![spark-localhost](./img/spark-localhost.png)
+
+
+## 4. Instalar componentes para GS
+
+Para poder acceder desde Spark al Bucket de GOOGLE necesitamos __jars__ simular a lo que hicimos en __Conexion_wsl_con_google_cloud__ pero ahora desde una VM
+
+__IMPORTANTE__ tambien vamos a necesitar las credenciales de la cuenta de servicios.
+
+[Tutorial de instalacion YOUTUBE](https://youtu.be/Yyz293hBVcQ?si=Ml_X2kcliKQ9R2q-)
+
+### 4.1 Primero probamos sin el __jar__
+
+Creamos una notebook en __/PyPsark/notebooks/pruebaSinJar.ipynb__ para ver que pasa.
+
+```python
+from pyspark.sql import SparkSession
+
+spark = SparkSession\
+    .builder\
+        .master("local[*]")\
+            .appName('SinJar')\
+                .getOrCreate()
+
+df_google = spark.read.parquet("gs://projectonleali-mibucketdataproc/data/green/2020/01/green_2020_01.parquet")               
+```
+
+![Error sin jar](./img/spark-error-sin-jar.png)
+
+Esto indica que no puede acceder a Google Cloud Storage
+
+### 4.2 Instalamos los Jars necesarios.
+
+Bajamos los conectores de Google para Hadoop3
+
+[Link a sitio de Google Cloud Storage Connector](https://cloud.google.com/dataproc/docs/concepts/connectors/cloud-storage?hl=es-419)
+
+En __home__ ~/ creamos un nuevo directorio __lib__ y descargamos acá el conector
+
+```shell
+mkdir lib
+cd lib
+gsutil cp gs://hadoop-lib/gcs/gcs-connector-hadoop3-2.2.5.jar gcs-connector-hadoop3-2.2.5.jar
+```
