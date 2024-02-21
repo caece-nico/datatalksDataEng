@@ -12,7 +12,7 @@
     - [Actions Vs. Transformations](#.-actions-vs-transformations)
     - [pyspark.sql functions](#.-pyspark.sql-functions)
     - [definicion de udf](#.-definicion-de-udf)
-    - [TransformacionesBasicas](#.-transaformaciones-basicas)
+    - [TransformacionesBasicas](#.-transformaciones-basicas)
 
 
 
@@ -335,4 +335,14 @@ Coalesce se usa para reducir una partición del dataset.
 Por ejemplo si queremos escribir un df a parquet y genera muchos archivos en el directorio destino, lo que podemos hacer es:
 df.coalesce(1).write.parquet(path)
 Esto reduce la partición de DF a 1.
+```
+
+#### .join
+
+Para hacer este join, vamos a usar una tabla con pocos registros.
+__../data/zonas/taxi_zone_lookup.csv__
+El motor de Spark lo qu eva a hacer es guardar una copia de este dataframe en cada __ejecutor__ y funcionará mas rápido.
+
+```python
+df_mayor.join(df_lookUp, df_mayor.columnA = df_lookUp.columnA).show()
 ```

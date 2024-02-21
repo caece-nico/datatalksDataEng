@@ -6,6 +6,8 @@
 2. [Instalacion Spark DataZoomCamp en ubuntu/wsl](#2.-instalacion-spark-datazoomcamp-en-ubuntu/wsl)
   - [Conexion de VSCODE a WSL](#.-conexion-de-vscode-a-wsl)
 5. [Otros recursos para instalar Spark](#5.-otros-recursos-para-instalar-spark)
+6. [Conectar Spark con GoogleCloud](#6.-conectar-spark-con-googlecloud)
+
 
 ## 1. Instalacion del entorno virtual
 
@@ -293,3 +295,8 @@ Durante la ejecución nos indica que la ejecución está usando un puerto 4040, 
 
 1. [Link para instalar Spark en Anaconda](https://sparkbyexamples.com/pyspark/install-pyspark-in-anaconda-jupyter-notebook/)
 2. [Link para instalar Spark en Windows](https://sparkbyexamples.com/pyspark/how-to-install-and-run-pyspark-on-windows/)
+
+
+## 6. Conectar Spark con googlecloud
+
+__VER PROYECTO__ "CONEXION_CON_GOOGLE_CLOUD"
