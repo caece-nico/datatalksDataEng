@@ -4,6 +4,7 @@
     - [Permisos cuenta de servicio](#.-permisos-cuenta-de-servicio)
 2. [Creacion de una ssh para ubuntu](#2.-creacion-ssh-ubuntu)
 3. [Spark-Entorno Local](#3.-spark-entorno-local)
+	- [Posibles error](#.-posibles-errores)
 
 
 ## 1. Introduccion
@@ -177,8 +178,10 @@ Por defecto se guarda en /root/.shh
 3. Nos logeamos desde ubuntu
 
 ```
-shh -i gcp_ubuntu nlealiapp@IP
+sudo shh -i gcp_ubuntu nlealiapp@IP
 ```
+
+__Siempre usamos sudo, sino es posible que no nos podamos conectar__
 
 ![Loging Ubuntu](./img/shh-loging-ubuntu.png)
 
@@ -208,6 +211,10 @@ Con las claves ssh creadas y la cuenta de servicio activa en WSL (UBUNTU) vamos 
 Luego, mas adelante, intalaremos Spark en la VM de GoogleCloud.
 ```
 
+Para conectarnos a GCLOUD Bucket necesitamos:
++ .json con las credenciales de la cuenta de servicios.
++ .jar con la nueva version de Hadoop3 para GCLOUD
+
 1. Copiamos un archivo de pruebas al bucket de google para intentar conectarnos desde spark(wsl) a GoogleCloud Storage
 
 Primero del repo local al nuevo que creamos para este proyecto(optativo)
@@ -235,13 +242,104 @@ Est da un error porque para que spark se pueda conectar al stora de Google neces
 
 ### Punto 1.
 
-DEscargamos el conector de hadoop 3x para google cloud storage
+Descargamos el conector de hadoop 3x para google cloud storage
 
 ![gcp-conector-hadoop](./img/gcp-conector-hadoop.png)
 
 [link conector hadoop 3.x GCP](https://cloud.google.com/dataproc/docs/concepts/connectors/cloud-storage?hl=es-419)
 
-En el directorio raiz __~/lib__ creamos la carpeta Lib donde vamos a descargar esta libreria
+En el directorio raiz __~/__ creamos la carpeta Lib donde vamos a descargar esta libreria. Tambien vamos a copiar el jar en el directorio jar de la instalacion de Spark.
+
+```shell
+ls -l lib
+ls -l spark/spark-3.3.2-bin-hadoop3/jars/gc*
+```
+
+![Archivos jar wsl](./img/jars-copia-wsl.png)
 
 
+La credenciales las guardamos en ${HOME}/.gc/projectonleali-649724cf41f9.json
 
+4. Creamos una sesion de Spark
+
+```
+Para poder usar este jar la creación de la sesión es un poco mas compleja porque debemos indicarle a Spark donde está el JAR que necesita para conectarse.
+```
+
+#### 4.1 Importamos las librerias necesarias.
+
+```python
+
+import pyspark
+from pyspark.sql import SparkSession
+from pyspark.conf import SparkConf
+from pyspark.context import SparkContext
+```
+
+#### 4.2 Especificamos donde está el .jar y las credenciales de la cuenta de servicios.
+
+```python
+credentials_location = '/home/nicoudin/.gc/projectonleali-649724cf41f9.json'
+
+conf = SparkConf() \
+    .setMaster('local[*]') \
+    .setAppName('otross') \
+    .set("spark.jars", "/home/nicoudin/spark/spark-3.3.2-bin-hadoop3/jars/gcs-connecto-hadoop3-2.2.5.jar") \
+    .set("spark.hadoop.google.cloud.auth.service.account.enable", "true") \
+    .set("spark.hadoop.google.cloud.auth.service.account.json.keyfile", credentials_location)
+```
+
+#### 4.3 Creamos un Contexto de Spark con la configuración del paso 4.2
+
+```python
+sc = SparkContext.getOrCreate(conf=conf)
+
+hadoop_conf = sc._jsc.hadoopConfiguration()
+
+hadoop_conf.set("fs.AbstractFileSystem.gs.impl",  "com.google.cloud.hadoop.fs.gcs.GoogleHadoopFS")
+hadoop_conf.set("fs.gs.impl", "com.google.cloud.hadoop.fs.gcs.GoogleHadoopFileSystem")
+hadoop_conf.set("fs.gs.auth.service.account.json.keyfile", credentials_location)
+hadoop_conf.set("fs.gs.auth.service.account.enable", "true")
+```
+
+#### 4.4 Creamos la sesion de Spark
+
+```python
+spark = SparkSession.builder\
+    .config(conf=sc.getConf()) \
+        .getOrCreate()
+```
+
+#### 4.5 Leemos un archivo de GSCLOUD
+
+```python
+df_green = spark.read.parquet("gs://projectonleali-mibucketdataproc/data/green/2020/01/green_2020_01.parquet")
+```
+
+Si tenemos que detener la sesión de Spark para hacer un cambio en la configuración, escribimos:
+
+```python
+spark.stop()
+```
+
+
+### Posibles Errores
+
+```
+Cuando estaba desarrollando está solución me encontré con el error:
+```
+
+Caused by: java.lang.ClassNotFoundException: Class com.google.cloud.hadoop.fs.gcs.GoogleHadoopFileSystem not found
+
+No estoy seguro como lo solucioné pero está relacionado con el __.jar__ que descargamos de Hadoop3x
+
+```
+La solución fué, copiar el .jar en el directorio de jars de la instalacion de Spark y apuntar a ese directorio la variable de JARS.
+.set("spark.jars", "/home/nicoudin/spark/spark-3.3.2-bin-hadoop3/jars/gcs-connecto-hadoop3-2.2.5.jar")
+```
+
+![spark-admin](./img/spark-java-jar-consola.png)
+
+Una vez que creamos la sesión de Spark y se habilita el puerto 4040, en la opción __environments__ vemos las variables uqe seteamos.
+
+Si esto no funciona, probar copiar el .jar al directorio donde está el código que estamos ejecutando.
