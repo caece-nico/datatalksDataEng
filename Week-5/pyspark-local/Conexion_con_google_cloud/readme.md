@@ -3,6 +3,7 @@
 1. [Introducción](##1.-Introduccion)
     - [Permisos cuenta de servicio](#.-permisos-cuenta-de-servicio)
 2. [Creacion de una ssh para ubuntu](#2.-creacion-ssh-ubuntu)
+3. [Spark-Entorno Local](#3.-spark-entorno-local)
 
 
 ## 1. Introduccion
@@ -198,3 +199,49 @@ Host de-zoomcamp_ubuntu
 ```
 
 __En ubuntu da error__ averiguar el motivo
+
+
+## 3. Spark entorno local
+
+```
+Con las claves ssh creadas y la cuenta de servicio activa en WSL (UBUNTU) vamos a trabajar con nuestro entorno de Spark local para acceder a GoogleCloud
+Luego, mas adelante, intalaremos Spark en la VM de GoogleCloud.
+```
+
+1. Copiamos un archivo de pruebas al bucket de google para intentar conectarnos desde spark(wsl) a GoogleCloud Storage
+
+Primero del repo local al nuevo que creamos para este proyecto(optativo)
+
+
+```shell
+cp /mnt/d/Proyectos/datatalksDataEng/Week-5/pyspark-local/Trabajo_de_la_semana/data/raw/green/2020/01/* /mnt/d/Proyectos/datatalksDataEng/Week-5/pyspark-local/Conexion_con_google_cloud/datos/green/2020/01/
+```
+
+ahora copiamos a la nube.
+
+```shell
+ gsutil cp -r green/2020/01/* gs://projectonleali-mibucketdataproc/data/green/2020/01/
+```
+
+2. Intentamos conectarnos con spark al google bucket usando __gs://__
+
+Ejemplo de lectura con error
+
+![error spark google storage](./img/spark-error-lwctura-googlestorage.png)
+
+Est da un error porque para que spark se pueda conectar al stora de Google necesita un __.jar__ y crear un __context__.
+
+3. Instalacion de los __.jars__
+
+### Punto 1.
+
+DEscargamos el conector de hadoop 3x para google cloud storage
+
+![gcp-conector-hadoop](./img/gcp-conector-hadoop.png)
+
+[link conector hadoop 3.x GCP](https://cloud.google.com/dataproc/docs/concepts/connectors/cloud-storage?hl=es-419)
+
+En el directorio raiz __~/lib__ creamos la carpeta Lib donde vamos a descargar esta libreria
+
+
+
