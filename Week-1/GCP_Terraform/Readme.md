@@ -1,7 +1,7 @@
 # Google Cloud Y Terraform
 
 1. [Introducción a terraform](#1.-introduccion-a-terraform)
-  - [Instalacion](#.-instalacion)
+    - [Instalacion](#.-instalacion)
 2. [Introducción a GCP](#2.-introduccion-a-gcp)
     - [Creacion d una cuenta de servicio](#.-creacion-de-una-cuenta-de-servicio)
 3. [Crear script terraform](#.-crear-script-terraform)
