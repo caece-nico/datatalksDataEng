@@ -1,6 +1,7 @@
 # Google Cloud Y Terraform
 
 1. [Introducción a terraform](#1.-introduccion-a-terraform)
+  - [Instalacion](#.-instalacion)
 2. [Introducción a GCP](#2.-introduccion-a-gcp)
     - [Creacion d una cuenta de servicio](#.-creacion-de-una-cuenta-de-servicio)
 3. [Crear script terraform](#.-crear-script-terraform)
@@ -34,6 +35,30 @@ Estos providers se obtienen una vez que ejecutamos el comando
 ```shell
 terraform main.tf
 ```
+
+## Instalacion
+
+Para instalar Terraform en Windows primero debemos descargar la version X64 del sitio web de descargas.
+
+[Link al sitio de descargas](https://developer.hashicorp.com/terraform/install)
+
+Una vez descargado lo descomprimimos en el disco D:\terraform.
+
+Creamos una variable Global de sistema PATH que apunte a ese directorio:
+
+![Terraform Install](./img/Terraform_Install.png)
+
+Comprobamos la instalacion
+
+Abrimos una terminal y escribimos:
+
+```
+terraform --version
+```
+
+![Terraform version](./img/terraform-version.png)
+
+
 # 2. Introduccion a GCP.
 
 Antes de crear el archivo _terraform_ es necesarios crear una _cuenta de servicios_ para indicarle a GCP quienes somos y que recursos queremos acceder, modificar o crear.
